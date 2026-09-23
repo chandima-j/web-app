@@ -5,72 +5,66 @@ import os
 
 application = Flask(__name__)
 
-# Cyber-Blue Neon Dashboard Template
+# Minimalist Productivity Hub Template
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AURA_NETOPS | Blue Neon Dashboard</title>
+    <title>AURA_FOCUS | Daily Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Fira+Code&display=swap');
         body {
-            font-family: 'Orbitron', sans-serif;
-            background: #0a0f1c;
-            color: #00e0ff;
+            font-family: 'Inter', sans-serif;
+            background: #f9fafb;
+            color: #374151;
         }
         h1, h2 {
-            font-family: 'Roboto Mono', monospace;
+            font-family: 'Fira Code', monospace;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="bg-black border-b border-cyan-700 p-4 flex justify-between items-center shadow-lg">
-        <h1 class="text-2xl font-bold uppercase tracking-widest">AURA_NETOPS</h1>
-        <span class="text-sm text-cyan-300">UTC: {{ current_time }}</span>
+    <header class="bg-white border-b border-gray-300 p-4 flex justify-between items-center shadow-sm">
+        <h1 class="text-xl font-bold uppercase tracking-widest text-indigo-600">AURA_FOCUS</h1>
+        <span class="text-sm text-gray-500">UTC: {{ current_time }}</span>
     </header>
 
     <!-- Main Content -->
     <main class="flex-grow p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- Network Stats -->
-        <div class="bg-[#111827] p-6 rounded-lg shadow-lg space-y-4 border border-cyan-800">
-            <h2 class="text-lg font-bold border-b border-cyan-700 pb-2">NETWORK_STATS</h2>
-            <p>Latency: <span class="text-white font-bold">{{ latency }} ms</span></p>
-            <p>Packet Loss: <span class="text-white font-bold">{{ packet_loss }} %</span></p>
-            <p>Throughput: <span class="text-white font-bold">{{ throughput }} Mbps</span></p>
+        <!-- Task List -->
+        <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
+            <h2 class="text-lg font-bold border-b border-gray-200 pb-2 text-indigo-700">TASKS_TODAY</h2>
+            <ul class="list-disc pl-5 space-y-2">
+                {% for task in tasks %}
+                    <li>{{ task }}</li>
+                {% endfor %}
+            </ul>
         </div>
 
-        <!-- Security Alerts -->
-        <div class="bg-[#111827] p-6 rounded-lg shadow-lg space-y-4 border border-cyan-800">
-            <h2 class="text-lg font-bold border-b border-cyan-700 pb-2">SECURITY_ALERTS</h2>
-            {% if alerts %}
-                <ul class="list-disc pl-5 text-red-400">
-                    {% for alert in alerts %}
-                        <li>{{ alert }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-cyan-400">No active alerts.</p>
-            {% endif %}
+        <!-- Inspiration -->
+        <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
+            <h2 class="text-lg font-bold border-b border-gray-200 pb-2 text-indigo-700">INSPIRATION</h2>
+            <blockquote class="italic text-gray-600">“{{ quote }}”</blockquote>
         </div>
 
         <!-- System Info -->
-        <div class="bg-[#111827] p-6 rounded-lg shadow-lg space-y-4 border border-cyan-800">
-            <h2 class="text-lg font-bold border-b border-cyan-700 pb-2">SYSTEM_INFO</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
+            <h2 class="text-lg font-bold border-b border-gray-200 pb-2 text-indigo-700">SYSTEM_INFO</h2>
             <p>Environment: {{ env_name }}</p>
             <p>AWS Region: {{ aws_region }}</p>
-            <p>Status: <span class="text-green-400 font-bold">Operational</span></p>
+            <p>Status: <span class="text-green-600 font-bold">Stable</span></p>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="bg-black border-t border-cyan-700 p-4 text-center text-xs text-cyan-500">
-        [AURA_NETOPS] >> Flask v3.x >> Blue Neon Mode
+    <footer class="bg-white border-t border-gray-300 p-4 text-center text-xs text-gray-500">
+        [AURA_FOCUS] >> Flask v3.x >> Productivity Mode
     </footer>
 
 </body>
@@ -83,35 +77,37 @@ def dashboard():
     env_name = os.environ.get('AWS_EB_ENVIRONMENT_NAME', 'LOCAL_DEBUG')
     aws_region = os.environ.get('AWS_REGION', 'us-east-1')
 
-    # Simulated metrics
-    latency = random.randint(10, 120)
-    packet_loss = round(random.uniform(0, 5), 2)
-    throughput = random.randint(50, 500)
+    # Simulated tasks
+    tasks = [
+        "Review GPON OLT configs",
+        "Write forensic case notes",
+        "Update Python automation scripts",
+        "Plan microservices prototype"
+    ]
 
-    # Simulated alerts
-    alerts = []
-    if random.choice([True, False]):
-        alerts.append("Firewall anomaly detected")
-    if random.choice([True, False]):
-        alerts.append("Unauthorized SSH attempt logged")
+    # Random inspirational quotes
+    quotes = [
+        "Focus on progress, not perfection.",
+        "Small steps every day build big results.",
+        "Discipline is the bridge between goals and success.",
+        "Your future is created by what you do today."
+    ]
+    quote = random.choice(quotes)
 
     return render_template_string(
         HTML_TEMPLATE,
         current_time=now,
         env_name=env_name,
         aws_region=aws_region,
-        latency=latency,
-        packet_loss=packet_loss,
-        throughput=throughput,
-        alerts=alerts
+        tasks=tasks,
+        quote=quote
     )
 
 @application.route('/health')
 def health_check():
     return jsonify({
-        "status": "operational",
-        "latency_ms": random.randint(10, 120),
-        "packet_loss_percent": round(random.uniform(0, 5), 2),
+        "status": "stable",
+        "tasks_remaining": random.randint(0, 5),
         "timestamp_utc": datetime.utcnow().isoformat()
     }), 200
 
